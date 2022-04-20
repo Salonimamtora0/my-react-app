@@ -1,0 +1,70 @@
+pipeline {
+	agent any
+
+	stages {
+        
+		stage('Clone'){
+
+            		steps{
+                		script {
+
+					sh
+					rm -rf s3-cloudfront
+					git clone 
+
+					}
+			}
+
+		}
+
+		stage('build'){
+			steps {
+				script{
+					sh
+
+					cd s3-cloudfront
+					npm install
+				}
+			}
+
+		
+		}
+	
+		stage('build'){
+			steps {
+				script{
+					sh
+
+					cd s3-cloudfront
+					npm run build
+				}
+			}
+		}
+
+		stage('Push'){
+			steps {
+				script{
+					sh
+
+					cd s3-cloudfront
+					aws s3 cp --recursive ./bhild s3://MyBucket/
+				}
+			}
+
+		}
+
+		stage('Invalidation'){
+			steps {
+				script{
+					sh
+
+					aws cloudfront create-invalidation --distribution-id  --paths "/*
+				}
+			}
+                
+		} 
+
+	}
+
+}
+
